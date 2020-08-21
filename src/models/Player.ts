@@ -1,6 +1,6 @@
 interface PlayerType {
     readonly name: string,
-    hand: number[],
+    hand: Set<number>,
     score: number
 }
 
@@ -11,7 +11,7 @@ class Player {
         return this.player.name;
     }
 
-    get hand(): number[] {
+    get hand(): Set<number> {
         return this.player.hand;
     }
 
@@ -20,14 +20,16 @@ class Player {
     }
 
     removeCard(cardId: number) {
-        this.player.hand = this.player.hand.filter(card => card !== cardId);
+        this.player.hand.delete(cardId);
     }
 
     includeCard(cardId: number) {
-        this.player.hand.push(cardId);
+        this.player.hand.add(cardId);
     }
 
     earnScore(score: number): void {
         this.player.score += score;
     }
 }
+
+export default Player;
