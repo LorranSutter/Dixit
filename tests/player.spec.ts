@@ -6,15 +6,15 @@ const playerData = {
     score: 0
 }
 
-describe('01 - Player', function () {
+describe('A - Player', function () {
 
-    it('A - Should be able to create a new player', () => {
+    it('01 - Should be able to create a new player', () => {
         const newPlayer = new Player(playerData);
 
         expect(newPlayer instanceof Player);
     });
 
-    it('B - Should be able to access properties', () => {
+    it('02 - Should be able to access properties', () => {
         const newPlayer = new Player(playerData);
 
         expect(newPlayer.name).toBe(playerData.name);
@@ -22,21 +22,21 @@ describe('01 - Player', function () {
         expect(newPlayer.score).toBe(playerData.score);
     });
 
-    it('C - Should be able to remove cards', () => {
+    it('03 - Should be able to remove cards', () => {
         const newPlayer = new Player(playerData);
         newPlayer.removeCard(1);
 
         expect(newPlayer.hand).not.toContain(1);
     });
 
-    it('D - Should be able to include cards', () => {
+    it('04 - Should be able to include cards', () => {
         const newPlayer = new Player(playerData);
         newPlayer.includeCard(4);
 
         expect(newPlayer.hand).toContain(4);
     });
 
-    it('E - Should be able to earn score', () => {
+    it('05 - Should be able to earn score', () => {
         const newPlayer = new Player(playerData);
         newPlayer.earnScore(10);
 

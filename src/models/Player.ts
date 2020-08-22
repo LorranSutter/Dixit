@@ -1,11 +1,7 @@
-interface PlayerType {
-    readonly name: string,
-    hand: Set<number>,
-    score: number
-}
+import IPlayer from './interfaces/IPlayer';
 
 class Player {
-    constructor(private player: PlayerType) { }
+    constructor(private player: IPlayer) { }
 
     get name(): string {
         return this.player.name;
