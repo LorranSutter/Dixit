@@ -20,8 +20,14 @@ function randomNumber(size: number) {
     return number;
 }
 
+function mongoObjectId() {
+    const timestamp = (new Date().getTime() / 1000 | 0).toString(16);
+    return timestamp + randomString(16).toLowerCase();
+};
+
 export function generatePlayer(name?: string, hand?: Set<string>, score?: number) {
     return {
+        id: mongoObjectId(),
         name: name || randomString(10),
         hand: hand || new Set([]),
         score: score || 0

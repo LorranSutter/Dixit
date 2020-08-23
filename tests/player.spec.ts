@@ -14,6 +14,7 @@ describe('A - Player', function () {
     it('02 - Should be able to access properties', () => {
         const newPlayer = new Player(playerData);
 
+        expect(newPlayer.id).toBe(playerData.id);
         expect(newPlayer.name).toBe(playerData.name);
         expect(newPlayer.hand).toBe(playerData.hand);
         expect(newPlayer.score).toBe(playerData.score);

@@ -3,6 +3,10 @@ import IPlayer from './interfaces/IPlayer';
 class Player {
     constructor(private player: IPlayer) { }
 
+    get id(): string {
+        return this.player.id;
+    }
+
     get name(): string {
         return this.player.name;
     }
