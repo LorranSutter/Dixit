@@ -1,5 +1,5 @@
 export default interface IPlayer {
     readonly name: string,
-    hand: Set<number>,
+    hand: Set<string>,
     score: number
 }

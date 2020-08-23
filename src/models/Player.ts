@@ -7,7 +7,7 @@ class Player {
         return this.player.name;
     }
 
-    get hand(): Set<number> {
+    get hand(): Set<string> {
         return this.player.hand;
     }
 
@@ -15,11 +15,11 @@ class Player {
         return this.player.score;
     }
 
-    removeCard(cardId: number) {
+    removeCard(cardId: string) {
         this.player.hand.delete(cardId);
     }
 
-    includeCard(cardId: number) {
+    includeCard(cardId: string) {
         this.player.hand.add(cardId);
     }
 

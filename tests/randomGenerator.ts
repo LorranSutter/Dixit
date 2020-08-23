@@ -20,10 +20,17 @@ function randomNumber(size: number) {
     return number;
 }
 
-export function generatePlayer() {
+export function generatePlayer(name?: string, hand?: Set<string>, score?: number) {
     return {
-        name: randomString(10),
-        hand: new Set([]),
-        score: 0
+        name: name || randomString(10),
+        hand: hand || new Set([]),
+        score: score || 0
     }
+}
+
+export function generateCardList(size: number): Set<string> {
+    const cardArrNumber = Array.from(Array(size).keys());
+    const cardArrString = cardArrNumber.map((card: number) => card.toString());
+
+    return new Set(cardArrString);
 }

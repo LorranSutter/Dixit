@@ -1,10 +1,7 @@
 import Player from '../src/models/Player';
+import { generatePlayer, generateCardList } from './randomGenerator';
 
-const playerData = {
-    name: 'Player name',
-    hand: new Set([1, 2, 3]),
-    score: 0
-}
+const playerData = generatePlayer('Player name', generateCardList(3));
 
 describe('A - Player', function () {
 
@@ -24,16 +21,16 @@ describe('A - Player', function () {
 
     it('03 - Should be able to remove cards', () => {
         const newPlayer = new Player(playerData);
-        newPlayer.removeCard(1);
+        newPlayer.removeCard('0');
 
-        expect(newPlayer.hand).not.toContain(1);
+        expect(newPlayer.hand).not.toContain('0');
     });
 
     it('04 - Should be able to include cards', () => {
         const newPlayer = new Player(playerData);
-        newPlayer.includeCard(4);
+        newPlayer.includeCard('3');
 
-        expect(newPlayer.hand).toContain(4);
+        expect(newPlayer.hand).toContain('3');
     });
 
     it('05 - Should be able to earn score', () => {
