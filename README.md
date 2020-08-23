@@ -2,7 +2,12 @@
 
 Multiplayer game based on Dixit
 
-## :book: Resources and Technologies :computer:
+## :book: Resources
+
+- [Factory Pattern in Typescript](https://blog.fullstacktraining.com/factory-pattern-in-typescript/)
+- [Filipe Deschamps](https://www.youtube.com/watch?v=arAz2Ff8s88&t) - factory design pattern
+
+## :computer: Technologies
 
 - [Typescript](https://www.typescriptlang.org/) - superset of JS programming language static typed
 - [Express](http://expressjs.com/) - web application framework
@@ -24,3 +29,4 @@ Multiplayer game based on Dixit
 ## :cookie: Credits
 
 - [Object Id generator](https://gist.github.com/solenoid/1372386)
+- [Shuffle array in JS](https://medium.com/@nitinpatel_20236/how-to-shuffle-correctly-shuffle-an-array-in-javascript-15ea3f84bfb)
