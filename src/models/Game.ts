@@ -1,4 +1,5 @@
 import IPlayer from "./interfaces/IPlayer";
+import shuffleArray from '../functions/shuffleArray';
 
 // interface PlayerInfo {
 //     player: IPlayer,
@@ -56,7 +57,7 @@ class Game {
     }
 
     private shuffleLibrary() {
-        this._library = this._library.sort(() => Math.random() - 0.5);
+        shuffleArray(this._library);
     }
 
     private giveCards(numOfCards: number) {

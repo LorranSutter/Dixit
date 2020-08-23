@@ -20,6 +20,7 @@ function randomNumber(size: number) {
     return number;
 }
 
+// Thanks to https://gist.github.com/solenoid/1372386
 function mongoObjectId() {
     const timestamp = (new Date().getTime() / 1000 | 0).toString(16);
     return timestamp + randomString(16).toLowerCase();
