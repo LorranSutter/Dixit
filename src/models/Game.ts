@@ -8,8 +8,9 @@ import IPlayer from "./interfaces/IPlayer";
 class Game {
 
     // private playerList: PlayerInfo[];
-    private library: Set<string>;
-    // private discarded: Set<string>;
+    private _library: string[];
+    // private placedOnTheTable: string[];
+    // private discarded: string[];
 
     constructor(private _players: IPlayer[], private _cards: Set<string>, private _maxScore: number = 30) {
         if (this._players.length < 3) {
@@ -33,7 +34,7 @@ class Game {
             throw Error('Ooopps... Max score must be up to 100');
         }
 
-        this.library = _cards;
+        this._library = Array.from(_cards);
         // this.playerList = players.map(_player => {
         //     return {
         //         player: _player,
@@ -42,28 +43,35 @@ class Game {
         // })
     }
 
-    // get players() {
-    //     return this._players;
-    // }
+    get players() {
+        return this._players;
+    }
 
-    // get maxScore() {
-    //     return this._maxScore;
-    // }
+    get library() {
+        return this._library;
+    }
+
+    get maxScore() {
+        return this._maxScore;
+    }
+
+    private shuffleLibrary() {
+        this._library = this._library.sort(() => Math.random() - 0.5);
+    }
+
+    private giveCards(numOfCards: number) {
+        this._players =
+            this._players.map(player => {
+                const cardsDrawn = new Set(this._library.splice(0, numOfCards));
+                player.hand = cardsDrawn;
+                return player;
+            });
+    }
+
+    init() {
+        this.shuffleLibrary();
+        this.giveCards(6);
+    }
 }
 
 export default Game;
-
-// const playerData1 = {
-//     name: 'Player name 1',
-//     hand: new Set([1, 2, 3]),
-//     score: 0
-// }
-
-// const playerData2 = {
-//     name: 'Player name 2',
-//     hand: new Set([8, 6, 9]),
-//     score: 5
-// }
-
-// const game = new Game([playerData1, playerData2]);
-// console.log(game.maxScore);

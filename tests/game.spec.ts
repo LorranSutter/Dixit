@@ -10,40 +10,66 @@ describe('B - Game', function () {
         expect(newGame instanceof Game);
     });
 
-    it('02 - Should be not be able to create a new game with less than 3 players', () => {
+    it('02 - Should be able to access properties', () => {
+        const players = Array.from({ length: 3 }, () => generatePlayer())
+        const cardList = generateCardList(84);
+        const maxScore = 30;
+        const newGame = new Game(players, cardList, maxScore);
+
+        expect(newGame.players).toBe(players);
+        expect(newGame.library).toStrictEqual(Array.from(cardList));
+        expect(newGame.maxScore).toBe(maxScore);
+    });
+
+    it('03 - Should be not be able to create a new game with less than 3 players', () => {
         const players = Array.from({ length: 2 }, () => generatePlayer())
 
         expect(() => new Game(players, generateCardList(10))).toThrow('Ooopps... Minimum number of players is 3');
     });
 
-    it('03 - Should be not be able to create a new game with more than 6 players', () => {
+    it('04 - Should be not be able to create a new game with more than 6 players', () => {
         const players = Array.from({ length: 7 }, () => generatePlayer())
 
         expect(() => new Game(players, generateCardList(10))).toThrow('Ooopps... Maximum number of players is 6');
     });
 
-    it('04 - Should be not be able to create a new game with number of cards less than 0', () => {
+    it('05 - Should be not be able to create a new game with number of cards less than 0', () => {
         const players = Array.from({ length: 3 }, () => generatePlayer());
 
         expect(() => new Game(players, generateCardList(0), 30)).toThrow('Ooopps... Number of cards must be greater than 0');
     });
 
-    it('05 - Should be not be able to create a new game with number of cards greater than 84', () => {
+    it('06 - Should be not be able to create a new game with number of cards greater than 84', () => {
         const players = Array.from({ length: 3 }, () => generatePlayer());
 
         expect(() => new Game(players, generateCardList(85), 30)).toThrow('Ooopps... Number of cards must be up to 84');
     });
 
-    it('06 - Should be not be able to create a new game with score less than 0', () => {
+    it('07 - Should be not be able to create a new game with score less than 0', () => {
         const players = Array.from({ length: 3 }, () => generatePlayer());
 
         expect(() => new Game(players, generateCardList(10), -1)).toThrow('Ooopps... Max score must be greater than 0');
     });
 
-    it('07 - Should be not be able to create a new game with score greater than 100', () => {
+    it('08 - Should be not be able to create a new game with score greater than 100', () => {
         const players = Array.from({ length: 3 }, () => generatePlayer());
 
         expect(() => new Game(players, generateCardList(10), 101)).toThrow('Ooopps... Max score must be up to 100');
+    });
+
+    it('09 - Should be not be able init the game', () => {
+        const numOfCards = 84;
+        const numOfCardsHand = 6;
+        const numOfPlayers = 4;
+        const players = Array.from({ length: numOfPlayers }, () => generatePlayer());
+        const newGame = new Game(players, generateCardList(numOfCards), 30);
+
+        newGame.init();
+
+        expect(newGame.library.length).toBe(numOfCards - numOfCardsHand * numOfPlayers);
+        newGame.players.forEach(player => {
+            expect(player.hand.size).toBe(numOfCardsHand);
+        });
     });
 
 });
