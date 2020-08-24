@@ -1,0 +1,1 @@
+export const enum Stages { unset, init, storytellerChosen, sentence, roundCards, roundVote, scoring, end };
