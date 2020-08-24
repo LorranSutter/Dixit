@@ -2,7 +2,13 @@
 
 Multiplayer game based on Dixit
 
-## :book: Resources
+---
+
+<h2 align="center"><i>Under development</i></h2>
+
+---
+
+## :book: Resources 
 
 - [Factory Pattern in Typescript](https://blog.fullstacktraining.com/factory-pattern-in-typescript/)
 - [Filipe Deschamps](https://www.youtube.com/watch?v=arAz2Ff8s88&t) - factory design pattern
