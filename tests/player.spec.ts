@@ -43,4 +43,25 @@ describe('A - Player', function () {
 
         expect(newPlayer.score).toBe(10);
     });
+
+    it('06 - Should be able to set player as storyteller', () => {
+        const newPlayer = new Player(playerData);
+        newPlayer.isStoryteller = true;
+
+        expect(newPlayer.isStoryteller).toBe(true);
+    });
+
+    it('07 - Should be able to set a vote', () => {
+        const newPlayer = new Player(playerData);
+        newPlayer.vote = 1;
+
+        expect(newPlayer.vote).toBe(1);
+    });
+
+    it('08 - Should be able to set a round card', () => {
+        const newPlayer = new Player(playerData);
+        newPlayer.roundCard = '1';
+
+        expect(newPlayer.roundCard).toBe('1');
+    });
 });
