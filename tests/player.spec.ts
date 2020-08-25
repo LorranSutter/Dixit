@@ -18,6 +18,9 @@ describe('A - Player', function () {
         expect(newPlayer.name).toBe(playerData.name);
         expect(newPlayer.hand).toBe(playerData.hand);
         expect(newPlayer.score).toBe(playerData.score);
+        expect(newPlayer.isStoryteller).toBe(playerData.isStoryteller);
+        expect(newPlayer.vote).toBe(playerData.vote);
+        expect(newPlayer.roundCard).toBe(playerData.roundCard);
     });
 
     it('03 - Should be able to remove cards', () => {

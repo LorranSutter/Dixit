@@ -1,12 +1,12 @@
-import IPlayer from "./interfaces/IPlayer";
+import Player from "./Player";
 import shuffleArray from '../functions/shuffleArray';
 import { Stages } from "./enums/Stages";
 
-interface IPlayerInfo extends IPlayer {
-    storyteller?: boolean,
-    vote?: number,
-    card?: string
-}
+// interface IPlayerInfo extends IPlayer {
+//     storyteller?: boolean,
+//     vote?: number,
+//     card?: string
+// }
 
 interface IPlayerVote {
     playerId: string,
@@ -24,7 +24,7 @@ class Game {
     // private _votes: IPlayerVote[];
     // private discarded: string[];
 
-    constructor(private _players: IPlayerInfo[], private _cards: Set<string>, private _maxScore: number = 30) {
+    constructor(private _players: Player[], private _cards: Set<string>, private _maxScore: number = 30) {
         if (this._players.length < 3) {
             throw Error('Ooopps... Minimum number of players is 3');
         }
@@ -79,8 +79,8 @@ class Game {
         return this._maxScore;
     }
 
-    get storyteller(): IPlayerInfo {
-        return this._players.filter(player => player.storyteller)[0];
+    get storyteller(): Player {
+        return this._players.filter(player => player.isStoryteller)[0];
     }
 
     // get roundCards() {
@@ -116,9 +116,9 @@ class Game {
         }
         for (const player of this._players) {
             if (player.id === playerId) {
-                player.storyteller = true;
+                player.isStoryteller = true;
             } else {
-                player.storyteller = false;
+                player.isStoryteller = false;
             }
         }
         this._stage = Stages.storytellerChosen;

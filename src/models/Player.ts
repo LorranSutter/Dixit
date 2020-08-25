@@ -3,6 +3,26 @@ import IPlayer from './interfaces/IPlayer';
 class Player {
     constructor(private player: IPlayer) { }
 
+    set score(_score: number) {
+        this.player.score = _score;
+    }
+
+    set hand(_hand: Set<string>) {
+        this.player.hand = _hand;
+    }
+
+    set isStoryteller(_isStoryteller: boolean | undefined) {
+        this.player.isStoryteller = _isStoryteller;
+    }
+
+    set vote(_vote: number | undefined) {
+        this.player.vote = _vote;
+    }
+
+    set roundCard(_roundCard: string | undefined) {
+        this.player.roundCard = _roundCard;
+    }
+
     get id(): string {
         return this.player.id;
     }
@@ -17,6 +37,18 @@ class Player {
 
     get score(): number {
         return this.player.score;
+    }
+
+    get isStoryteller(): boolean | undefined {
+        return this.player.isStoryteller;
+    }
+
+    get vote(): number | undefined {
+        return this.player.vote;
+    }
+
+    get roundCard(): string | undefined {
+        return this.player.roundCard;
     }
 
     removeCard(cardId: string) {
