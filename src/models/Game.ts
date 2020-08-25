@@ -93,6 +93,10 @@ class Game {
         return this._sentence;
     }
 
+    get roundCards() {
+        return this._roundCards;
+    }
+
     // get roundCards() {
     //     return this._roundCards;
     // }
@@ -149,6 +153,29 @@ class Game {
         }
         this._sentence = sentence
         this._stage = Stages.sentence;
+    }
+
+    chooseRoundCard(playerId: string, cardId: string) {
+        if (!(this._stage === Stages.sentence)) {
+            throw Error('Ooopps... No sentence chosen');
+        }
+        for (const player of this._players) {
+            if (player.id === playerId) {
+                if(!player.hand.has(cardId)){
+                    throw Error('Ooopps... Invalid chosen card');
+                }
+                if (!player.roundCard) {
+                    this._roundCards.push(cardId);
+                    player.hand.delete(cardId);
+                    player.roundCard = cardId;
+                    this.allPlayersChoseRoundCard();
+                    return;
+                } else {
+                    throw Error('Ooopps... Cannot change players chosen card');
+                }
+            }
+        }
+        throw Error('Ooopps... Invalid player');
     }
 
     // vote(playerId: string, vote: number) {
