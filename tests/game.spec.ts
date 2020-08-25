@@ -97,17 +97,38 @@ describe('B.02 - Game play', function () {
         expect(() => newGame.setStoryteller(players[0].id)).toThrow('Ooopps... Game not started');
     });
 
-    // it('11 - Should be able to choose player round card', () => {
-    //     const players = Array.from({ length: 4 }, () => generatePlayer());
-    //     const newGame = new Game(players, generateCardList(84), 30);
-    //     newGame.init();
-    //     newGame.setStoryteller(players[0].id);
-    //     newGame.chooseRoundCard(players[1].id, card)
+    it('04 - Should be able to set a sentence', () => {
+        const players = Array.from({ length: 4 }, () => generatePlayer());
+        const newGame = new Game(players, generateCardList(84), 30);
+        const sentence = 'My sentence';
 
-    //     expect(newGame.storyteller.id).toBe(players[0].id);
-    // });
+        newGame.init();
+        newGame.setStoryteller(players[0].id);
+        newGame.setSentence(sentence);
 
-    it.todo('choose story teller exception');
+        expect(newGame.sentence).toContain(sentence);
+        expect(newGame.stage).toBe(Stages.sentence);
+    });
+
+    it('05 - Should not be able to set a sentence before choosing a storyteller', () => {
+        const players = Array.from({ length: 4 }, () => generatePlayer());
+        const newGame = new Game(players, generateCardList(84), 30);
+
+        newGame.init();
+        expect(() => newGame.setSentence('My sentence')).toThrow('Ooopps... No storyteller chosen');
+    });
+
+    it('06 - Should not be able to set a sentence of size 0', () => {
+        const players = Array.from({ length: 4 }, () => generatePlayer());
+        const newGame = new Game(players, generateCardList(84), 30);
+
+        newGame.init();
+        newGame.setStoryteller(players[0].id);
+        expect(() => newGame.setSentence('')).toThrow('Ooopps... Sentence must be greater than 0');
+    });
+
+    it.todo('round card');
+    it.todo('round card exceptions');
     it.todo('vote');
     it.todo('vote exception');
 

@@ -20,6 +20,7 @@ class Game {
     private _stage: Stages;
     private _library: string[];
     // private _storyteller: string;
+    private _sentence: string;
     private _roundCards: string[];
     // private _votes: IPlayerVote[];
     // private discarded: string[];
@@ -49,6 +50,7 @@ class Game {
         this._stage = Stages.unset;
         this._library = Array.from(_cards);
         // this._storyteller = '';
+        this._sentence = '';
         this._roundCards = [];
         // this._votes = [];
         // this.playerList = players.map(_player => {
@@ -63,12 +65,16 @@ class Game {
     //     this._storyteller = playerId;
     // }
 
-    get stage(){
+    get stage() {
         return this._stage;
     }
 
     get players() {
         return this._players;
+    }
+
+    get playersNotStoryteller() {
+        return this._players.filter(player => !player.isStoryteller);
     }
 
     get library() {
@@ -81,6 +87,10 @@ class Game {
 
     get storyteller(): Player {
         return this._players.filter(player => player.isStoryteller)[0];
+    }
+
+    get sentence(){
+        return this._sentence;
     }
 
     // get roundCards() {
@@ -104,6 +114,12 @@ class Game {
             });
     }
 
+    private allPlayersChoseRoundCard() {
+        if (this._players.every(player => player.roundCard)) {
+            this._stage = Stages.roundCards;
+        }
+    }
+
     init() {
         this.shuffleLibrary();
         this.giveCards(6);
@@ -124,23 +140,16 @@ class Game {
         this._stage = Stages.storytellerChosen;
     }
 
-    // chooseRoundCard(playerId: string, cardId: string) {
-    //     if (!(this._stage === Stages.sentence)) {
-    //         throw Error('Ooopps... No storyteller or sentence chosen');
-    //     }
-    //     for (const player of this._players) {
-    //         if (player.id === playerId) {
-    //             if (!player.card) {
-    //                 this._roundCards.push(cardId);
-    //                 player.card = cardId;
-    //                 return;
-    //             } else {
-    //                 throw Error('Ooopps... Cannot change players chosen card');
-    //             }
-    //         }
-    //     }
-    //     throw Error('Ooopps... Invalid chosen card');
-    // }
+    setSentence(sentence: string) {
+        if (!(this._stage === Stages.storytellerChosen)) {
+            throw Error('Ooopps... No storyteller chosen');
+        }
+        if(sentence.length === 0){
+            throw Error('Ooopps... Sentence must be greater than 0');
+        }
+        this._sentence = sentence
+        this._stage = Stages.sentence;
+    }
 
     // vote(playerId: string, vote: number) {
     //     if (!(this._stage === Stages.roundCards)) {
