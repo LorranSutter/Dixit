@@ -72,7 +72,7 @@ describe('B.02 - Game play', function () {
 
         newGame.init();
 
-        expect(newGame.stage).toBe(Stages.init);
+        expect(newGame.stage).toBe(Stages.storyteller);
         expect(newGame.library.length).toBe(numOfCards - numOfCardsHand * numOfPlayers);
         newGame.players.forEach(player => {
             expect(player.hand.size).toBe(numOfCardsHand);
@@ -86,7 +86,7 @@ describe('B.02 - Game play', function () {
         newGame.init();
         newGame.setStoryteller(players[0].id);
 
-        expect(newGame.stage).toBe(Stages.storytellerChosen);
+        expect(newGame.stage).toBe(Stages.sentence);
         expect(newGame.storyteller.id).toBe(players[0].id);
     });
 
@@ -107,7 +107,7 @@ describe('B.02 - Game play', function () {
         newGame.setSentence(sentence);
 
         expect(newGame.sentence).toContain(sentence);
-        expect(newGame.stage).toBe(Stages.sentence);
+        expect(newGame.stage).toBe(Stages.roundCards);
     });
 
     it('05 - Should not be able to set a sentence before choosing a storyteller', () => {

@@ -1,1 +1,1 @@
-export const enum Stages { unset, init, storytellerChosen, sentence, roundCards, roundVote, scoring, end };
+export const enum Stages { unset, init, storyteller, sentence, roundCards, roundVote, scoring, end };

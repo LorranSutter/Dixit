@@ -120,18 +120,19 @@ class Game {
 
     private allPlayersChoseRoundCard() {
         if (this._players.every(player => player.roundCard)) {
-            this._stage = Stages.roundCards;
+            this._stage = Stages.roundVote;
         }
     }
 
     init() {
+        this._stage = Stages.init;
         this.shuffleLibrary();
         this.giveCards(6);
-        this._stage = Stages.init;
+        this._stage = Stages.storyteller;
     }
 
     setStoryteller(playerId: string) {
-        if (!(this._stage === Stages.init)) {
+        if (!(this._stage === Stages.storyteller)) {
             throw Error('Ooopps... Game not started');
         }
         for (const player of this._players) {
@@ -141,22 +142,22 @@ class Game {
                 player.isStoryteller = false;
             }
         }
-        this._stage = Stages.storytellerChosen;
+        this._stage = Stages.sentence;
     }
 
     setSentence(sentence: string) {
-        if (!(this._stage === Stages.storytellerChosen)) {
+        if (!(this._stage === Stages.sentence)) {
             throw Error('Ooopps... No storyteller chosen');
         }
         if(sentence.length === 0){
             throw Error('Ooopps... Sentence must be greater than 0');
         }
         this._sentence = sentence
-        this._stage = Stages.sentence;
+        this._stage = Stages.roundCards;
     }
 
     chooseRoundCard(playerId: string, cardId: string) {
-        if (!(this._stage === Stages.sentence)) {
+        if (!(this._stage === Stages.roundCards)) {
             throw Error('Ooopps... No sentence chosen');
         }
         for (const player of this._players) {
