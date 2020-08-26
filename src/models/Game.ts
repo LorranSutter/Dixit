@@ -119,7 +119,7 @@ class Game {
     }
 
     private allPlayersChoseRoundCard() {
-        if (this._players.every(player => player.roundCard)) {
+        if (this.playersNotStoryteller.every(player => player.roundCard)) {
             this._stage = Stages.roundVote;
         }
     }
@@ -133,7 +133,7 @@ class Game {
 
     setStoryteller(playerId: string) {
         if (!(this._stage === Stages.storyteller)) {
-            throw Error('Ooopps... Game not started');
+            throw Error('Ooopps... It is not time to set a storyteller');
         }
         for (const player of this._players) {
             if (player.id === playerId) {
@@ -147,7 +147,7 @@ class Game {
 
     setSentence(sentence: string) {
         if (!(this._stage === Stages.sentence)) {
-            throw Error('Ooopps... No storyteller chosen');
+            throw Error('Ooopps... It is not time to set a sentence');
         }
         if(sentence.length === 0){
             throw Error('Ooopps... Sentence must be greater than 0');
@@ -158,7 +158,7 @@ class Game {
 
     chooseRoundCard(playerId: string, cardId: string) {
         if (!(this._stage === Stages.roundCards)) {
-            throw Error('Ooopps... No sentence chosen');
+            throw Error('Ooopps... It is not time to chose round card');
         }
         for (const player of this._players) {
             if (player.id === playerId) {

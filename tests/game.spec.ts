@@ -94,7 +94,7 @@ describe('B.02 - Game play', function () {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
-        expect(() => newGame.setStoryteller(players[0].id)).toThrow('Ooopps... Game not started');
+        expect(() => newGame.setStoryteller(players[0].id)).toThrow('Ooopps... It is not time to set a storyteller');
     });
 
     it('04 - Should be able to set a sentence', () => {
@@ -115,7 +115,7 @@ describe('B.02 - Game play', function () {
         const newGame = new Game(players, generateCardList(84), 30);
 
         newGame.init();
-        expect(() => newGame.setSentence('My sentence')).toThrow('Ooopps... No storyteller chosen');
+        expect(() => newGame.setSentence('My sentence')).toThrow('Ooopps... It is not time to set a sentence');
     });
 
     it('06 - Should not be able to set a sentence of size 0', () => {
@@ -155,7 +155,7 @@ describe('B.02 - Game play', function () {
         const playerTest = newGame.playersNotStoryteller[0];
         const playerRoundCard = Array.from(playerTest.hand)[0];
 
-        expect(() => newGame.chooseRoundCard(players[1].id, playerRoundCard)).toThrow('Ooopps... No sentence chosen');
+        expect(() => newGame.chooseRoundCard(players[1].id, playerRoundCard)).toThrow('Ooopps... It is not time to chose round card');
     });
 
     it('09 - Should not be able to change the player round card', () => {
@@ -195,6 +195,38 @@ describe('B.02 - Game play', function () {
         newGame.setSentence('My sentence');
 
         expect(() => newGame.chooseRoundCard(players[1].id, '123')).toThrow('Ooopps... Invalid chosen card');
+    });
+
+    it('12 - Should be able to change state after all players chose round card', () => {
+        const players = Array.from({ length: 4 }, () => generatePlayer());
+        const newGame = new Game(players, generateCardList(84), 30);
+
+        newGame.init();
+        newGame.setStoryteller(players[0].id);
+        newGame.setSentence('My sentence');
+
+        newGame.playersNotStoryteller.forEach(player => {
+            const playerRoundCard = Array.from(player.hand)[0];
+            newGame.chooseRoundCard(player.id, playerRoundCard);
+        });
+
+        expect(newGame.stage).toBe(Stages.roundVote);
+    });
+
+    it('13 - Should be able to change state after all players chose round card', () => {
+        const players = Array.from({ length: 4 }, () => generatePlayer());
+        const newGame = new Game(players, generateCardList(84), 30);
+
+        newGame.init();
+        newGame.setStoryteller(players[0].id);
+        newGame.setSentence('My sentence');
+
+        newGame.playersNotStoryteller.forEach(player => {
+            const playerRoundCard = Array.from(player.hand)[0];
+            newGame.chooseRoundCard(player.id, playerRoundCard);
+        });
+
+        expect(() => newGame.chooseRoundCard(players[1].id, '123')).toThrow('Ooopps... It is not time to chose round card');
     });
 
     it.todo('round card exceptions');
