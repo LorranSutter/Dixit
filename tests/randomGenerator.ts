@@ -1,3 +1,4 @@
+import IPlayer from '../src/models/interfaces/IPlayer';
 import Player from '../src/models/Player';
 
 function randomString(size: number) {
@@ -26,21 +27,15 @@ function mongoObjectId() {
     return timestamp + randomString(16).toLowerCase();
 };
 
-export function generatePlayer(
-    name?: string,
-    hand?: Set<string>,
-    score?: number,
-    isStoryteller?: boolean,
-    vote?: number,
-    roundCard?: string): Player {
+export function generatePlayer(_playerData?: IPlayer): Player {
     return new Player({
-        id: mongoObjectId(),
-        name: name || randomString(10),
-        hand: hand || new Set([]),
-        score: score || 0,
-        isStoryteller: isStoryteller || false,
-        vote: vote || -1,
-        roundCard: roundCard || '',
+        id: _playerData &&_playerData.id || mongoObjectId(),
+        name: _playerData &&_playerData.name || randomString(10),
+        hand: _playerData &&_playerData.hand || new Set([]),
+        score: _playerData &&_playerData.score || 0,
+        isStoryteller: _playerData &&_playerData.isStoryteller || false,
+        vote: _playerData &&_playerData.vote || -1,
+        roundCard: _playerData &&_playerData.roundCard || '',
     });
 }
 
