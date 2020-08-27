@@ -21,6 +21,7 @@ class Game {
     private _library: string[];
     // private _storyteller: string;
     private _sentence: string;
+    private _storytellerCard: string;
     private _roundCards: string[];
     // private _votes: IPlayerVote[];
     // private discarded: string[];
@@ -51,6 +52,7 @@ class Game {
         this._library = Array.from(_cards);
         // this._storyteller = '';
         this._sentence = '';
+        this._storytellerCard = '';
         this._roundCards = [];
         // this._votes = [];
         // this.playerList = players.map(_player => {
@@ -151,14 +153,18 @@ class Game {
         this._stage = Stages.sentence;
     }
 
-    setSentence(sentence: string) {
+    setSentenceAndCard(sentence: string, cardId: string) {
         if (!(this._stage === Stages.sentence)) {
             throw Error('Ooopps... It is not time to set a sentence');
         }
         if (sentence.length === 0) {
             throw Error('Ooopps... Sentence must be greater than 0');
         }
+        if (!this.storyteller.hand.has(cardId)) {
+            throw Error('Ooopps... Storyteller does not have chosen card');
+        }
         this._sentence = sentence
+        this._storytellerCard = cardId;
         this._stage = Stages.roundCards;
     }
 

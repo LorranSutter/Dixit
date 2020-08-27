@@ -9,7 +9,7 @@
   "scripts": {
     "start": "tsnd --transpile-only --ignore-watch node_modules --respawn src/server.ts",
     "test": "jest --verbose",
-    "coverage": "jest --coverage --coveragePathIgnorePatterns ./tests/randomGenerator.ts"
+    "coverage": "jest --coverage --coveragePathIgnorePatterns ./tests/randomGenerator.ts ./tests/gameplay.ts"
   },
   "devDependencies": {
     "@types/express": "^4.17.7",

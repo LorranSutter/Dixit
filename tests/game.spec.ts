@@ -1,6 +1,7 @@
 import Game from '../src/models/Game';
 import { Stages } from '../src/models/enums/Stages';
 import { generatePlayer, generateCardList } from './randomGenerator';
+import gameplay from './gameplay';
 
 describe('B.01 - Game setup', function () {
 
@@ -109,10 +110,14 @@ describe('B.04 - Game (stage sentence)', function () {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
         const sentence = 'My sentence';
+        const storyteller = players[0];
 
         newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence(sentence);
+
+        const storytellerCard = Array.from(storyteller.hand)[0];
+
+        newGame.setStoryteller(storyteller.id);
+        newGame.setSentenceAndCard(sentence, storytellerCard);
 
         expect(newGame.sentence).toContain(sentence);
         expect(newGame.stage).toBe(Stages.roundCards);
@@ -123,7 +128,8 @@ describe('B.04 - Game (stage sentence)', function () {
         const newGame = new Game(players, generateCardList(84), 30);
 
         newGame.init();
-        expect(() => newGame.setSentence('My sentence')).toThrow('Ooopps... It is not time to set a sentence');
+
+        expect(() => newGame.setSentenceAndCard('My sentence', '123')).toThrow('Ooopps... It is not time to set a sentence');
     });
 
     it('03 - Should not be able to set a sentence of size 0', () => {
@@ -132,7 +138,18 @@ describe('B.04 - Game (stage sentence)', function () {
 
         newGame.init();
         newGame.setStoryteller(players[0].id);
-        expect(() => newGame.setSentence('')).toThrow('Ooopps... Sentence must be greater than 0');
+
+        expect(() => newGame.setSentenceAndCard('', '123')).toThrow('Ooopps... Sentence must be greater than 0');
+    });
+
+    it('04 - Should not be able to set a card which storyteller does not have', () => {
+        const players = Array.from({ length: 4 }, () => generatePlayer());
+        const newGame = new Game(players, generateCardList(84), 30);
+
+        newGame.init();
+        newGame.setStoryteller(players[0].id);
+
+        expect(() => newGame.setSentenceAndCard('My sentence', '123')).toThrow('Ooopps... Storyteller does not have chosen card');
     });
 
 });
@@ -140,17 +157,12 @@ describe('B.04 - Game (stage sentence)', function () {
 describe('B.05 - Game (stage roundCard)', function () {
 
     it('01 - Should be able to choose player round card', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
-
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
+        const newGame = gameplay(Stages.sentence);
 
         const playerTest = newGame.playersNotStoryteller[0];
         const playerRoundCard = Array.from(playerTest.hand)[0];
 
-        newGame.chooseRoundCard(players[1].id, playerRoundCard);
+        newGame.chooseRoundCard(playerTest.id, playerRoundCard);
 
         expect(newGame.roundCards).toContain(playerRoundCard);
         expect(playerTest.roundCard).toBe(playerRoundCard);
@@ -158,87 +170,52 @@ describe('B.05 - Game (stage roundCard)', function () {
     });
 
     it('02 - Should not be able to choose player round card if it is not in the roundCard stage', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
-
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
+        const newGame = gameplay(Stages.storyteller);
 
         const playerTest = newGame.playersNotStoryteller[0];
         const playerRoundCard = Array.from(playerTest.hand)[0];
 
-        expect(() => newGame.chooseRoundCard(players[1].id, playerRoundCard)).toThrow('Ooopps... It is not time to choose round card');
+        expect(() => newGame.chooseRoundCard(playerTest.id, playerRoundCard)).toThrow('Ooopps... It is not time to choose round card');
     });
 
     it('03 - Should not be able to change the player round card', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
-
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
+        const newGame = gameplay(Stages.sentence);
 
         const playerTest = newGame.playersNotStoryteller[0];
         const playerRoundCard0 = Array.from(playerTest.hand)[0];
         const playerRoundCard1 = Array.from(playerTest.hand)[1];
 
-        newGame.chooseRoundCard(players[1].id, playerRoundCard0);
+        newGame.chooseRoundCard(playerTest.id, playerRoundCard0);
 
-        expect(() => newGame.chooseRoundCard(players[1].id, playerRoundCard1)).toThrow('Ooopps... Cannot change players chosen card');
+        expect(() => newGame.chooseRoundCard(playerTest.id, playerRoundCard1)).toThrow('Ooopps... Cannot change players chosen card');
     });
 
     it('04 - Should not be able to choose round card with an invalid player', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
-
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
+        const newGame = gameplay(Stages.sentence);
 
         expect(() => newGame.chooseRoundCard('123', '123')).toThrow('Ooopps... Invalid player');
     });
 
     it('05 - Should not be able to choose an invalid round card', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
+        const newGame = gameplay(Stages.sentence);
 
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
+        const playerTest = newGame.playersNotStoryteller[0];
 
-        expect(() => newGame.chooseRoundCard(players[1].id, '123')).toThrow('Ooopps... Invalid chosen card');
+        expect(() => newGame.chooseRoundCard(playerTest.id, '123')).toThrow('Ooopps... Invalid chosen card');
     });
 
     it('06 - Should be able to change state after all players have chosen round card', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
-
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
-
-        newGame.playersNotStoryteller.forEach(player => {
-            const playerRoundCard = Array.from(player.hand)[0];
-            newGame.chooseRoundCard(player.id, playerRoundCard);
-        });
+        const newGame = gameplay(Stages.roundCards);
 
         expect(newGame.stage).toBe(Stages.roundVote);
     });
 
     it('07 - Should not be able to choose round card after round card stage', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
+        const newGame = gameplay(Stages.roundCards);
 
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
+        const playerTest = newGame.playersNotStoryteller[0];
 
-        newGame.playersNotStoryteller.forEach(player => {
-            const playerRoundCard = Array.from(player.hand)[0];
-            newGame.chooseRoundCard(player.id, playerRoundCard);
-        });
-
-        expect(() => newGame.chooseRoundCard(players[1].id, '123')).toThrow('Ooopps... It is not time to choose round card');
+        expect(() => newGame.chooseRoundCard(playerTest.id, '123')).toThrow('Ooopps... It is not time to choose round card');
     });
 
 });
@@ -246,16 +223,7 @@ describe('B.05 - Game (stage roundCard)', function () {
 describe('B.06 - Game (stage roundVote)', function () {
 
     it('01 - Should be able to allow player to vote', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
-
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
-        newGame.playersNotStoryteller.forEach(player => {
-            const playerRoundCard = Array.from(player.hand)[0];
-            newGame.chooseRoundCard(player.id, playerRoundCard);
-        });
+        const newGame = gameplay(Stages.roundCards);
 
         const playerTest = newGame.playersNotStoryteller[0];
         const voteCard = newGame.roundCards[0];
@@ -266,12 +234,7 @@ describe('B.06 - Game (stage roundVote)', function () {
     });
 
     it('02 - Should not be able allow voting if it is not the roundVote stage', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
-
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
+        const newGame = gameplay(Stages.sentence);
 
         const playerTest = newGame.playersNotStoryteller[0];
         const voteCard = newGame.roundCards[0];
@@ -280,16 +243,7 @@ describe('B.06 - Game (stage roundVote)', function () {
     });
 
     it('03 - Should not be able to change the vote', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
-
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
-        newGame.playersNotStoryteller.forEach(player => {
-            const playerRoundCard = Array.from(player.hand)[0];
-            newGame.chooseRoundCard(player.id, playerRoundCard);
-        });
+        const newGame = gameplay(Stages.roundCards);
 
         const playerTest = newGame.playersNotStoryteller[0];
         const voteCard0 = newGame.roundCards[0];
@@ -301,71 +255,31 @@ describe('B.06 - Game (stage roundVote)', function () {
     });
 
     it('04 - Should not be able to vote with an invalid player', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
-
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
-        newGame.playersNotStoryteller.forEach(player => {
-            const playerRoundCard = Array.from(player.hand)[0];
-            newGame.chooseRoundCard(player.id, playerRoundCard);
-        });
+        const newGame = gameplay(Stages.roundCards);
 
         expect(() => newGame.vote('123', '123')).toThrow('Ooopps... Invalid player');
     });
 
     it('05 - Should not be able to choose an invalid card to vote', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
+        const newGame = gameplay(Stages.roundCards);
 
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
-        newGame.playersNotStoryteller.forEach(player => {
-            const playerRoundCard = Array.from(player.hand)[0];
-            newGame.chooseRoundCard(player.id, playerRoundCard);
-        });
+        const playerTest = newGame.playersNotStoryteller[0];
 
-        expect(() => newGame.vote(players[1].id, '123')).toThrow('Ooopps... Invalid chosen card');
+        expect(() => newGame.vote(playerTest.id, '123')).toThrow('Ooopps... Invalid chosen card');
     });
 
     it('06 - Should be able to change state after all players have voted', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
-
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
-        newGame.playersNotStoryteller.forEach(player => {
-            const playerRoundCard = Array.from(player.hand)[0];
-            newGame.chooseRoundCard(player.id, playerRoundCard);
-        });
-        newGame.playersNotStoryteller.forEach(player => {
-            const voteCard = newGame.roundCards[0];
-            newGame.vote(player.id, voteCard);
-        });
+        const newGame = gameplay(Stages.roundVote);
 
         expect(newGame.stage).toBe(Stages.scoring);
     });
 
     it('07 - Should not be able to vote after roundVote stage', () => {
-        const players = Array.from({ length: 4 }, () => generatePlayer());
-        const newGame = new Game(players, generateCardList(84), 30);
+        const newGame = gameplay(Stages.roundVote);
 
-        newGame.init();
-        newGame.setStoryteller(players[0].id);
-        newGame.setSentence('My sentence');
-        newGame.playersNotStoryteller.forEach(player => {
-            const playerRoundCard = Array.from(player.hand)[0];
-            newGame.chooseRoundCard(player.id, playerRoundCard);
-        });
-        newGame.playersNotStoryteller.forEach(player => {
-            const voteCard = newGame.roundCards[0];
-            newGame.vote(player.id, voteCard);
-        });
+        const playerTest = newGame.playersNotStoryteller[0];
 
-        expect(() => newGame.vote(players[1].id, '123')).toThrow('Ooopps... It is not time to vote round');
+        expect(() => newGame.vote(playerTest.id, '123')).toThrow('Ooopps... It is not time to vote round');
     });
 
 });
