@@ -15,7 +15,7 @@ class Player {
         this.player.isStoryteller = _isStoryteller;
     }
 
-    set vote(_vote: number | undefined) {
+    set vote(_vote: string | undefined) {
         this.player.vote = _vote;
     }
 
@@ -43,7 +43,7 @@ class Player {
         return this.player.isStoryteller;
     }
 
-    get vote(): number | undefined {
+    get vote(): string | undefined {
         return this.player.vote;
     }
 

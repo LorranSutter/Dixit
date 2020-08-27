@@ -34,7 +34,7 @@ export function generatePlayer(_playerData?: IPlayer): Player {
         hand: _playerData &&_playerData.hand || new Set([]),
         score: _playerData &&_playerData.score || 0,
         isStoryteller: _playerData &&_playerData.isStoryteller || false,
-        vote: _playerData &&_playerData.vote || -1,
+        vote: _playerData &&_playerData.vote || '',
         roundCard: _playerData &&_playerData.roundCard || '',
     });
 }

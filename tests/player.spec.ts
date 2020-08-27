@@ -7,7 +7,7 @@ const playerData = {
     hand: generateCardList(3),
     score: 0,
     isStoryteller: false,
-    vote: 1,
+    vote: '',
     roundCard: ''
 }
 
@@ -61,9 +61,9 @@ describe('A - Player', function () {
 
     it('07 - Should be able to set a vote', () => {
         const newPlayer = generatePlayer(playerData);
-        newPlayer.vote = 1;
+        newPlayer.vote = '1';
 
-        expect(newPlayer.vote).toBe(1);
+        expect(newPlayer.vote).toBe('1');
     });
 
     it('08 - Should be able to set a round card', () => {

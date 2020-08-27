@@ -4,6 +4,6 @@ export default interface IPlayer {
     hand: Set<string>,
     score: number,
     isStoryteller?: boolean,
-    vote?: number,
+    vote?: string,
     roundCard?: string
 }
