@@ -3,10 +3,6 @@ import IPlayer from './interfaces/IPlayer';
 class Player {
     constructor(private player: IPlayer) { }
 
-    set score(_score: number) {
-        this.player.score = _score;
-    }
-
     set hand(_hand: Set<string>) {
         this.player.hand = _hand;
     }

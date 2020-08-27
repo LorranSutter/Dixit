@@ -89,7 +89,7 @@ class Game {
         return this._players.filter(player => player.isStoryteller)[0];
     }
 
-    get sentence(){
+    get sentence() {
         return this._sentence;
     }
 
@@ -124,6 +124,12 @@ class Game {
         }
     }
 
+    private allPlayersVoted() {
+        if (this.playersNotStoryteller.every(player => player.vote)) {
+            this._stage = Stages.scoring;
+        }
+    }
+
     init() {
         this._stage = Stages.init;
         this.shuffleLibrary();
@@ -149,7 +155,7 @@ class Game {
         if (!(this._stage === Stages.sentence)) {
             throw Error('Ooopps... It is not time to set a sentence');
         }
-        if(sentence.length === 0){
+        if (sentence.length === 0) {
             throw Error('Ooopps... Sentence must be greater than 0');
         }
         this._sentence = sentence
@@ -158,11 +164,11 @@ class Game {
 
     chooseRoundCard(playerId: string, cardId: string) {
         if (!(this._stage === Stages.roundCards)) {
-            throw Error('Ooopps... It is not time to chose round card');
+            throw Error('Ooopps... It is not time to choose round card');
         }
         for (const player of this._players) {
             if (player.id === playerId) {
-                if(!player.hand.has(cardId)){
+                if (!player.hand.has(cardId)) {
                     throw Error('Ooopps... Invalid chosen card');
                 }
                 if (!player.roundCard) {
@@ -179,25 +185,26 @@ class Game {
         throw Error('Ooopps... Invalid player');
     }
 
-    // vote(playerId: string, vote: number) {
-    //     if (!(this._stage === Stages.roundCards)) {
-    //         throw Error('Ooopps... All players must have chosen a card');
-    //     }
-    //     for (const player of this._players) {
-    //         if (player.id === playerId) {
-    //             player.vote = vote;
-    //             break;
-    //         }
-    //     }
-    // }
-
-    // addStorytellerCard(cardId: string) {
-    //     this._roundCards.push(cardId);
-    // }
-
-    // addVote(vote: IPlayerVote) {
-    //     this.votes.push(vote);
-    // }
+    vote(playerId: string, cardId: string) {
+        if (!(this._stage === Stages.roundVote)) {
+            throw Error('Ooopps... It is not time to vote round');
+        }
+        for (const player of this._players) {
+            if (player.id === playerId) {
+                if (!this._roundCards.includes(cardId)) {
+                    throw Error('Ooopps... Invalid chosen card');
+                }
+                if (!player.vote) {
+                    player.vote = cardId;
+                    this.allPlayersVoted();
+                    return;
+                } else {
+                    throw Error('Ooopps... Cannot change players vote');
+                }
+            }
+        }
+        throw Error('Ooopps... Invalid player');
+    }
 
     // computeScores() {
     //     if (this._roundCards.length !== this._players.length) {
