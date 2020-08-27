@@ -61,7 +61,7 @@ describe('B.01 - Game setup', function () {
 
 });
 
-describe('B.02 - Game play', function () {
+describe('B.02 - Game (stage init)', function () {
 
     it('01 - Should be able init the game', () => {
         const numOfCards = 84;
@@ -79,7 +79,11 @@ describe('B.02 - Game play', function () {
         });
     });
 
-    it('02 - Should be able to set the storyteller', () => {
+});
+
+describe('B.03 - Game (stage storyteller)', function () {
+
+    it('01 - Should be able to set the storyteller', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
@@ -90,14 +94,18 @@ describe('B.02 - Game play', function () {
         expect(newGame.storyteller.id).toBe(players[0].id);
     });
 
-    it('03 - Should not be able to set the storyteller before starting the game', () => {
+    it('02 - Should not be able to set the storyteller before starting the game', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
         expect(() => newGame.setStoryteller(players[0].id)).toThrow('Ooopps... It is not time to set a storyteller');
     });
 
-    it('04 - Should be able to set a sentence', () => {
+});
+
+describe('B.04 - Game (stage sentence)', function () {
+
+    it('01 - Should be able to set a sentence', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
         const sentence = 'My sentence';
@@ -110,7 +118,7 @@ describe('B.02 - Game play', function () {
         expect(newGame.stage).toBe(Stages.roundCards);
     });
 
-    it('05 - Should not be able to set a sentence before choosing a storyteller', () => {
+    it('02 - Should not be able to set a sentence before choosing a storyteller', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
@@ -118,7 +126,7 @@ describe('B.02 - Game play', function () {
         expect(() => newGame.setSentence('My sentence')).toThrow('Ooopps... It is not time to set a sentence');
     });
 
-    it('06 - Should not be able to set a sentence of size 0', () => {
+    it('03 - Should not be able to set a sentence of size 0', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
@@ -127,7 +135,11 @@ describe('B.02 - Game play', function () {
         expect(() => newGame.setSentence('')).toThrow('Ooopps... Sentence must be greater than 0');
     });
 
-    it('07 - Should be able to choose player round card', () => {
+});
+
+describe('B.05 - Game (stage roundCard)', function () {
+
+    it('01 - Should be able to choose player round card', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
@@ -145,7 +157,7 @@ describe('B.02 - Game play', function () {
         expect(playerTest.hand).not.toContain(playerRoundCard);
     });
 
-    it('08 - Should not be able to choose player round card before setting a sentence', () => {
+    it('02 - Should not be able to choose player round card before setting a sentence', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
@@ -158,7 +170,7 @@ describe('B.02 - Game play', function () {
         expect(() => newGame.chooseRoundCard(players[1].id, playerRoundCard)).toThrow('Ooopps... It is not time to chose round card');
     });
 
-    it('09 - Should not be able to change the player round card', () => {
+    it('03 - Should not be able to change the player round card', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
@@ -175,7 +187,7 @@ describe('B.02 - Game play', function () {
         expect(() => newGame.chooseRoundCard(players[1].id, playerRoundCard1)).toThrow('Ooopps... Cannot change players chosen card');
     });
 
-    it('10 - Should not be able to choose round card with an invalid player', () => {
+    it('04 - Should not be able to choose round card with an invalid player', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
@@ -186,7 +198,7 @@ describe('B.02 - Game play', function () {
         expect(() => newGame.chooseRoundCard('123', '123')).toThrow('Ooopps... Invalid player');
     });
 
-    it('11 - Should not be able to choose an invalid round card', () => {
+    it('05 - Should not be able to choose an invalid round card', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
@@ -197,7 +209,7 @@ describe('B.02 - Game play', function () {
         expect(() => newGame.chooseRoundCard(players[1].id, '123')).toThrow('Ooopps... Invalid chosen card');
     });
 
-    it('12 - Should be able to change state after all players chose round card', () => {
+    it('06 - Should be able to change state after all players chose round card', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
@@ -213,7 +225,7 @@ describe('B.02 - Game play', function () {
         expect(newGame.stage).toBe(Stages.roundVote);
     });
 
-    it('13 - Should be able to change state after all players chose round card', () => {
+    it('07 - Should not be able to choose round card after round card stage', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
 
@@ -229,7 +241,10 @@ describe('B.02 - Game play', function () {
         expect(() => newGame.chooseRoundCard(players[1].id, '123')).toThrow('Ooopps... It is not time to chose round card');
     });
 
-    it.todo('round card exceptions');
+});
+
+describe('B.06 - Game (stage roundVote)', function () {
+
     it.todo('vote');
     it.todo('vote exception');
 
