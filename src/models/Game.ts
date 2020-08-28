@@ -131,7 +131,7 @@ class Game {
             this._stage = Stages.scoring;
         }
     }
-
+    
     init() {
         this._stage = Stages.init;
         this.shuffleLibrary();
@@ -199,6 +199,9 @@ class Game {
             if (player.id === playerId) {
                 if (!this._roundCards.includes(cardId)) {
                     throw Error('Ooopps... Invalid chosen card');
+                }
+                if(player.roundCard === cardId){
+                    throw Error('Ooopps... Cannot vote in your own card');
                 }
                 if (!player.vote) {
                     player.vote = cardId;

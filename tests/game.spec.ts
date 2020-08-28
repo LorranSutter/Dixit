@@ -226,7 +226,8 @@ describe('B.06 - Game (stage roundVote)', function () {
         const newGame = gameplay(Stages.roundCards);
 
         const playerTest = newGame.playersNotStoryteller[0];
-        const voteCard = newGame.roundCards[0];
+        const roundCards = newGame.roundCards.filter(cards => cards !== playerTest.roundCard);
+        const voteCard = roundCards[0];
 
         newGame.vote(playerTest.id, voteCard);
 
@@ -237,7 +238,8 @@ describe('B.06 - Game (stage roundVote)', function () {
         const newGame = gameplay(Stages.sentence);
 
         const playerTest = newGame.playersNotStoryteller[0];
-        const voteCard = newGame.roundCards[0];
+        const roundCards = newGame.roundCards.filter(cards => cards !== playerTest.roundCard);
+        const voteCard = roundCards[0];
 
         expect(() => newGame.vote(playerTest.id, voteCard)).toThrow('Ooopps... It is not time to vote round');
     });
@@ -246,8 +248,9 @@ describe('B.06 - Game (stage roundVote)', function () {
         const newGame = gameplay(Stages.roundCards);
 
         const playerTest = newGame.playersNotStoryteller[0];
-        const voteCard0 = newGame.roundCards[0];
-        const voteCard1 = newGame.roundCards[1];
+        const roundCards = newGame.roundCards.filter(cards => cards !== playerTest.roundCard);
+        const voteCard0 = roundCards[0];
+        const voteCard1 = roundCards[1];
 
         newGame.vote(playerTest.id, voteCard0);
 
@@ -268,13 +271,22 @@ describe('B.06 - Game (stage roundVote)', function () {
         expect(() => newGame.vote(playerTest.id, '123')).toThrow('Ooopps... Invalid chosen card');
     });
 
-    it('06 - Should be able to change state after all players have voted', () => {
+    it('06 - Should not be able to vote in your own card', () => {
+        const newGame = gameplay(Stages.roundCards);
+
+        const playerTest = newGame.playersNotStoryteller[0];
+        const voteCard = playerTest.roundCard as string;
+
+        expect(() => newGame.vote(playerTest.id, voteCard)).toThrow('Ooopps... Cannot vote in your own card');
+    });
+
+    it('07 - Should be able to change state after all players have voted', () => {
         const newGame = gameplay(Stages.roundVote);
 
         expect(newGame.stage).toBe(Stages.scoring);
     });
 
-    it('07 - Should not be able to vote after roundVote stage', () => {
+    it('08 - Should not be able to vote after roundVote stage', () => {
         const newGame = gameplay(Stages.roundVote);
 
         const playerTest = newGame.playersNotStoryteller[0];

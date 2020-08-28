@@ -27,7 +27,8 @@ export default function gameplay(stage?: number, numPlayers?: number, numCards?:
     }
     if (stage >= Stages.roundVote) {
         newGame.playersNotStoryteller.forEach(player => {
-            const voteCard = newGame.roundCards[0];
+            const roundCards = newGame.roundCards.filter(cards => cards !== player.roundCard);
+            const voteCard = roundCards[0];
             newGame.vote(player.id, voteCard);
         });
     }
