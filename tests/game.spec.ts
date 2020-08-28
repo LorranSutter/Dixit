@@ -283,3 +283,12 @@ describe('B.06 - Game (stage roundVote)', function () {
     });
 
 });
+
+describe('B.07 - Game (stage roundScore)', function () {
+
+    it.todo('It is possible to compute scores - right scores');
+    it.todo('Throws when it is not compute scores stage');
+    it.todo('Change stage to storyteller');
+    it.todo('We have a winner - end stage');
+
+});

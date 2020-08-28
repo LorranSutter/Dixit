@@ -212,13 +212,39 @@ class Game {
         throw Error('Ooopps... Invalid player');
     }
 
-    // computeScores() {
-    //     if (this._roundCards.length !== this._players.length) {
-    //         throw Error(`Ooopps... The number of storyteller cards must be ${this._players.length}`);
-    //     } else if (this._votes.length !== this._players.length - 1) {
-    //         throw Error(`Ooopps... The number of votes must be ${this._players.length - 1}`);
-    //     }
-    // }
+    computeScores() {
+        if (!(this._stage === Stages.scoring)) {
+            throw Error('Ooopps... It is not time to compute the scores');
+        }
+
+        const playersNotStoryteller = this.playersNotStoryteller;
+
+        if (playersNotStoryteller.every(player => player.vote === this._storytellerCard)) {
+            playersNotStoryteller.forEach(player => player.earnScore(2));
+            return;
+        }
+        if (playersNotStoryteller.every(player => player.vote !== this._storytellerCard)) {
+            playersNotStoryteller.forEach(player => player.earnScore(2));
+        } else {
+            this.storyteller.earnScore(3);
+        }
+
+        const votes = playersNotStoryteller.map(player => player.vote);
+
+        playersNotStoryteller.forEach(player => {
+            if(player.vote === this._storytellerCard){
+                player.earnScore(3);
+            }
+            votes.forEach(vote => {
+                if(player.roundCard === vote){
+                    player.earnScore(1);
+                }
+            });
+        });
+
+        // TODO Check winner
+        // TODO Change stage to storyteller
+    }
 }
 
 export default Game;
