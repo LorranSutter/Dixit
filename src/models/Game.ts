@@ -99,6 +99,10 @@ class Game {
         return this._roundCards;
     }
 
+    get storytellerCard() {
+        return this._storytellerCard;
+    }
+
     // get roundCards() {
     //     return this._roundCards;
     // }
@@ -131,7 +135,26 @@ class Game {
             this._stage = Stages.scoring;
         }
     }
-    
+
+    private checkWinner() {
+        const reachedMaxScore = this.players.filter(player => player.score >= this._maxScore);
+
+        if (reachedMaxScore.length === 0) {
+            return;
+        }
+
+        if (reachedMaxScore.length === 1) {
+            return reachedMaxScore[0];
+        }
+
+        reachedMaxScore.sort((a: Player, b: Player) => b.score - a.score);
+
+        // No tie
+        if (reachedMaxScore[0].score > reachedMaxScore[1].score) {
+            return reachedMaxScore[0];
+        }
+    }
+
     init() {
         this._stage = Stages.init;
         this.shuffleLibrary();
@@ -165,6 +188,7 @@ class Game {
         }
         this._sentence = sentence
         this._storytellerCard = cardId;
+        this._roundCards.push(cardId);
         this._stage = Stages.roundCards;
     }
 
@@ -200,7 +224,7 @@ class Game {
                 if (!this._roundCards.includes(cardId)) {
                     throw Error('Ooopps... Invalid chosen card');
                 }
-                if(player.roundCard === cardId){
+                if (player.roundCard === cardId) {
                     throw Error('Ooopps... Cannot vote in your own card');
                 }
                 if (!player.vote) {
@@ -224,29 +248,35 @@ class Game {
 
         if (playersNotStoryteller.every(player => player.vote === this._storytellerCard)) {
             playersNotStoryteller.forEach(player => player.earnScore(2));
-            return;
         }
-        if (playersNotStoryteller.every(player => player.vote !== this._storytellerCard)) {
+        else if (playersNotStoryteller.every(player => player.vote !== this._storytellerCard)) {
             playersNotStoryteller.forEach(player => player.earnScore(2));
-        } else {
+            // TODO Compute individual score too
+        }
+        else {
             this.storyteller.earnScore(3);
+
+            const votes = playersNotStoryteller.map(player => player.vote);
+
+            playersNotStoryteller.forEach(player => {
+                if (player.vote === this._storytellerCard) {
+                    player.earnScore(3);
+                }
+                votes.forEach(vote => {
+                    if (player.roundCard === vote) {
+                        player.earnScore(1);
+                    }
+                });
+            });
         }
 
-        const votes = playersNotStoryteller.map(player => player.vote);
+        const winner = this.checkWinner();
 
-        playersNotStoryteller.forEach(player => {
-            if(player.vote === this._storytellerCard){
-                player.earnScore(3);
-            }
-            votes.forEach(vote => {
-                if(player.roundCard === vote){
-                    player.earnScore(1);
-                }
-            });
-        });
-
-        // TODO Check winner
-        // TODO Change stage to storyteller
+        if (winner) {
+            this._stage = Stages.end;
+        } else {
+            this._stage = Stages.storyteller;
+        }
     }
 }
 

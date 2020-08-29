@@ -64,7 +64,7 @@ describe('B.01 - Game setup', function () {
 
 describe('B.02 - Game (stage init)', function () {
 
-    it('01 - Should be able init the game', () => {
+    it('01 - Should be able to init the game', () => {
         const numOfCards = 84;
         const numOfCardsHand = 6;
         const numOfPlayers = 4;
@@ -106,7 +106,7 @@ describe('B.03 - Game (stage storyteller)', function () {
 
 describe('B.04 - Game (stage sentence)', function () {
 
-    it('01 - Should be able to set a sentence', () => {
+    it('01 - Should be able to set a sentence and a storyteller card', () => {
         const players = Array.from({ length: 4 }, () => generatePlayer());
         const newGame = new Game(players, generateCardList(84), 30);
         const sentence = 'My sentence';
@@ -120,6 +120,8 @@ describe('B.04 - Game (stage sentence)', function () {
         newGame.setSentenceAndCard(sentence, storytellerCard);
 
         expect(newGame.sentence).toContain(sentence);
+        expect(newGame.storytellerCard).toContain(storytellerCard);
+        expect(newGame.roundCards).toContain(storytellerCard);
         expect(newGame.stage).toBe(Stages.roundCards);
     });
 
@@ -234,7 +236,7 @@ describe('B.06 - Game (stage roundVote)', function () {
         expect(playerTest.vote).toBe(voteCard);
     });
 
-    it('02 - Should not be able allow voting if it is not the roundVote stage', () => {
+    it('02 - Should not be able to allow voting if it is not the roundVote stage', () => {
         const newGame = gameplay(Stages.sentence);
 
         const playerTest = newGame.playersNotStoryteller[0];
@@ -296,7 +298,54 @@ describe('B.06 - Game (stage roundVote)', function () {
 
 });
 
-describe('B.07 - Game (stage roundScore)', function () {
+describe('B.07 - Game (stage scoring)', function () {
+
+    it('01 - Should not be able to compute votes if it is not the scoring stage', () => {
+        const newGame = gameplay(Stages.roundCards);
+
+        expect(() => newGame.computeScores()).toThrow('Ooopps... It is not time to compute the scores');
+    });
+
+    it('02 - Should be able to compute the scores when all players find storyteller card', () => {
+        const newGame = gameplay(Stages.roundCards, 4);
+
+        const storyteller = newGame.storyteller;
+        const storytellerCard = newGame.storytellerCard;
+        const playersNotStoryteller = newGame.playersNotStoryteller;
+
+        playersNotStoryteller.forEach(player => {
+            newGame.vote(player.id, storytellerCard);
+        });
+
+        newGame.computeScores();
+
+        expect(newGame.stage).toBe(Stages.storyteller);
+        expect(storyteller.score).toBe(0);
+        playersNotStoryteller.forEach(player => {
+            expect(player.score).toBe(2);
+        });
+    });
+
+    // it.only('03 - Should be able to compute the scores when no players find storyteller card', () => {
+    //     const newGame = gameplay(Stages.roundCards, 4);
+
+    //     const storyteller = newGame.storyteller;
+    //     const storytellerCard = newGame.storytellerCard;
+    //     const playersNotStoryteller = newGame.playersNotStoryteller;
+
+    //     playersNotStoryteller.forEach(player => {
+    //         newGame.vote(player.id, storytellerCard);
+    //     });
+
+    //     newGame.computeScores();
+
+    //     expect(newGame.stage).toBe(Stages.storyteller);
+    //     expect(storyteller.score).toBe(0);
+    //     playersNotStoryteller.forEach(player => {
+    //         expect(player.score).toBe(2);
+    //     });
+    // });
+
 
     it.todo('It is possible to compute scores - right scores');
     it.todo('Throws when it is not compute scores stage');
