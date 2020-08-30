@@ -249,13 +249,7 @@ class Game {
         if (playersNotStoryteller.every(player => player.vote === this._storytellerCard)) {
             playersNotStoryteller.forEach(player => player.earnScore(2));
         }
-        else if (playersNotStoryteller.every(player => player.vote !== this._storytellerCard)) {
-            playersNotStoryteller.forEach(player => player.earnScore(2));
-            // TODO Compute individual score too
-        }
         else {
-            this.storyteller.earnScore(3);
-
             const votes = playersNotStoryteller.map(player => player.vote);
 
             playersNotStoryteller.forEach(player => {
@@ -268,6 +262,13 @@ class Game {
                     }
                 });
             });
+
+            if (playersNotStoryteller.every(player => player.vote !== this._storytellerCard)) {
+                playersNotStoryteller.forEach(player => player.earnScore(2));
+            }
+            else {
+                this.storyteller.earnScore(3);
+            }
         }
 
         const winner = this.checkWinner();
