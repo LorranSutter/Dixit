@@ -306,7 +306,7 @@ describe('B.07 - Game (stage scoring)', function () {
         expect(() => newGame.computeScores()).toThrow('Ooopps... It is not time to compute the scores');
     });
 
-    it('02 - Should be able to compute the scores when all players find storyteller card', () => {
+    it('02 - Should be able to compute the scores when all players found storyteller card', () => {
         const newGame = gameplay(Stages.roundCards, 4);
 
         const storyteller = newGame.storyteller;
@@ -326,7 +326,7 @@ describe('B.07 - Game (stage scoring)', function () {
         });
     });
 
-    it('03 - Should be able to compute the scores when no players find storyteller card', () => {
+    it('03 - Should be able to compute the scores when no players found storyteller card', () => {
         const newGame = gameplay(Stages.roundCards, 4);
 
         const storyteller = newGame.storyteller;
@@ -346,10 +346,27 @@ describe('B.07 - Game (stage scoring)', function () {
         expect(playersNotStoryteller[2].score).toBe(2);
     });
 
+    it('03 - Should be able to compute the scores when some players found storyteller card', () => {
+        const newGame = gameplay(Stages.roundCards, 4);
 
-    it.todo('It is possible to compute scores - right scores');
-    it.todo('Throws when it is not compute scores stage');
-    it.todo('Change stage to storyteller');
+        const storyteller = newGame.storyteller;
+        const storytellerCard = newGame.storytellerCard;
+        const playersNotStoryteller = newGame.playersNotStoryteller;
+
+        newGame.vote(playersNotStoryteller[0].id, playersNotStoryteller[1].roundCard as string);
+        newGame.vote(playersNotStoryteller[1].id, playersNotStoryteller[0].roundCard as string);
+        newGame.vote(playersNotStoryteller[2].id, storytellerCard);
+
+        newGame.computeScores();
+
+        expect(newGame.stage).toBe(Stages.storyteller);
+        expect(storyteller.score).toBe(3);
+        expect(playersNotStoryteller[0].score).toBe(1);
+        expect(playersNotStoryteller[1].score).toBe(1);
+        expect(playersNotStoryteller[2].score).toBe(3);
+    });
+
+    it.todo('Throws when it is not compute scores stage after having a winner');
     it.todo('We have a winner - end stage');
 
 });
