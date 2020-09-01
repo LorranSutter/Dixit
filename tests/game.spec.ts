@@ -326,25 +326,25 @@ describe('B.07 - Game (stage scoring)', function () {
         });
     });
 
-    // it.only('03 - Should be able to compute the scores when no players find storyteller card', () => {
-    //     const newGame = gameplay(Stages.roundCards, 4);
+    it('03 - Should be able to compute the scores when no players find storyteller card', () => {
+        const newGame = gameplay(Stages.roundCards, 4);
 
-    //     const storyteller = newGame.storyteller;
-    //     const storytellerCard = newGame.storytellerCard;
-    //     const playersNotStoryteller = newGame.playersNotStoryteller;
+        const storyteller = newGame.storyteller;
+        const playersNotStoryteller = newGame.playersNotStoryteller;
+        const cardToBeVoted = playersNotStoryteller[0].roundCard;
 
-    //     playersNotStoryteller.forEach(player => {
-    //         newGame.vote(player.id, storytellerCard);
-    //     });
+        newGame.vote(playersNotStoryteller[0].id, playersNotStoryteller[1].roundCard as string);
+        newGame.vote(playersNotStoryteller[1].id, cardToBeVoted as string);
+        newGame.vote(playersNotStoryteller[2].id, cardToBeVoted as string);
 
-    //     newGame.computeScores();
+        newGame.computeScores();
 
-    //     expect(newGame.stage).toBe(Stages.storyteller);
-    //     expect(storyteller.score).toBe(0);
-    //     playersNotStoryteller.forEach(player => {
-    //         expect(player.score).toBe(2);
-    //     });
-    // });
+        expect(newGame.stage).toBe(Stages.storyteller);
+        expect(storyteller.score).toBe(0);
+        expect(playersNotStoryteller[0].score).toBe(4);
+        expect(playersNotStoryteller[1].score).toBe(3);
+        expect(playersNotStoryteller[2].score).toBe(2);
+    });
 
 
     it.todo('It is possible to compute scores - right scores');

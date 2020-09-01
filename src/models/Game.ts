@@ -246,16 +246,19 @@ class Game {
 
         const playersNotStoryteller = this.playersNotStoryteller;
 
+        // All players found storyteller card
         if (playersNotStoryteller.every(player => player.vote === this._storytellerCard)) {
             playersNotStoryteller.forEach(player => player.earnScore(2));
         }
-        else {
+        else { // Compute individual scores
             const votes = playersNotStoryteller.map(player => player.vote);
 
             playersNotStoryteller.forEach(player => {
+                // Player who found storyteller card
                 if (player.vote === this._storytellerCard) {
                     player.earnScore(3);
                 }
+                // Player who received votes
                 votes.forEach(vote => {
                     if (player.roundCard === vote) {
                         player.earnScore(1);
@@ -263,10 +266,11 @@ class Game {
                 });
             });
 
+            // No player found storyteller card
             if (playersNotStoryteller.every(player => player.vote !== this._storytellerCard)) {
                 playersNotStoryteller.forEach(player => player.earnScore(2));
             }
-            else {
+            else { // Some players found storyteller card
                 this.storyteller.earnScore(3);
             }
         }
