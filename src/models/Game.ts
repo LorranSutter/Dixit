@@ -23,6 +23,7 @@ class Game {
     private _sentence: string;
     private _storytellerCard: string;
     private _roundCards: string[];
+    private _winner: Player | undefined;
     // private _votes: IPlayerVote[];
     // private discarded: string[];
 
@@ -54,6 +55,7 @@ class Game {
         this._sentence = '';
         this._storytellerCard = '';
         this._roundCards = [];
+        this._winner = undefined;
         // this._votes = [];
         // this.playerList = players.map(_player => {
         //     return {
@@ -111,17 +113,20 @@ class Game {
     //     return this._votes;
     // }
 
+    get winner() {
+        return this._winner;
+    }
+
     private shuffleLibrary() {
         shuffleArray(this._library);
     }
 
     private giveCards(numOfCards: number) {
-        this._players =
-            this._players.map(player => {
-                const cardsDrawn = new Set(this._library.splice(0, numOfCards));
-                player.hand = cardsDrawn;
-                return player;
-            });
+        this._players.forEach(player => {
+            const cardsDrawn = new Set(this._library.splice(0, numOfCards));
+            player.hand = cardsDrawn;
+            return player;
+        });
     }
 
     private allPlayersChoseRoundCard() {
@@ -144,15 +149,30 @@ class Game {
         }
 
         if (reachedMaxScore.length === 1) {
-            return reachedMaxScore[0];
+            this._winner = reachedMaxScore[0];
+            return;
         }
 
         reachedMaxScore.sort((a: Player, b: Player) => b.score - a.score);
 
         // No tie
         if (reachedMaxScore[0].score > reachedMaxScore[1].score) {
-            return reachedMaxScore[0];
+            this._winner = reachedMaxScore[0];
+            return;
         }
+    }
+
+    private cleanRoundCardsAndVotes() {
+        this._players.forEach(player => {
+            player.roundCard = undefined;
+            player.vote = undefined;
+        });
+    }
+
+    private reorderPlayers() {
+        const lastStoryteller = this._players[0];
+        this._players = this._players.slice(1);
+        this._players.push(lastStoryteller);
     }
 
     init() {
@@ -275,13 +295,21 @@ class Game {
             }
         }
 
-        const winner = this.checkWinner();
+        this.checkWinner();
 
-        if (winner) {
+        if (this._winner) {
             this._stage = Stages.end;
         } else {
-            this._stage = Stages.storyteller;
+            this._stage = Stages.newRound;
+            // TODO give cards
+            // TODO reset variables
         }
+    }
+
+    newRound() {
+        this.cleanRoundCardsAndVotes();
+        this.reorderPlayers();
+        this.giveCards(1);
     }
 }
 
