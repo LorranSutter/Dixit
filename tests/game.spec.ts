@@ -371,10 +371,10 @@ describe('B.07 - Game (stage scoring)', function () {
 
 });
 
-describe.only('B.07 - Game (stage newRound)', function () {
+describe('B.07 - Game (stage newRound)', function () {
     it('03 - Should be able to compute the scores when some players found storyteller card', () => {
         // FIXME
-        const newGame = gameplay(Stages.newRound);
+        // const newGame = gameplay(Stages.newRound);
     });
 
     it.todo('Check reset variables');
