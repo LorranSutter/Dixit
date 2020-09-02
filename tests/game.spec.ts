@@ -319,7 +319,7 @@ describe('B.07 - Game (stage scoring)', function () {
 
         newGame.computeScores();
 
-        expect(newGame.stage).toBe(Stages.storyteller);
+        expect(newGame.stage).toBe(Stages.newRound);
         expect(storyteller.score).toBe(0);
         playersNotStoryteller.forEach(player => {
             expect(player.score).toBe(2);
@@ -339,7 +339,7 @@ describe('B.07 - Game (stage scoring)', function () {
 
         newGame.computeScores();
 
-        expect(newGame.stage).toBe(Stages.storyteller);
+        expect(newGame.stage).toBe(Stages.newRound);
         expect(storyteller.score).toBe(0);
         expect(playersNotStoryteller[0].score).toBe(4);
         expect(playersNotStoryteller[1].score).toBe(3);
@@ -359,7 +359,7 @@ describe('B.07 - Game (stage scoring)', function () {
 
         newGame.computeScores();
 
-        expect(newGame.stage).toBe(Stages.storyteller);
+        expect(newGame.stage).toBe(Stages.newRound);
         expect(storyteller.score).toBe(3);
         expect(playersNotStoryteller[0].score).toBe(1);
         expect(playersNotStoryteller[1].score).toBe(1);
@@ -369,4 +369,14 @@ describe('B.07 - Game (stage scoring)', function () {
     it.todo('Throws when it is not compute scores stage after having a winner');
     it.todo('We have a winner - end stage');
 
+});
+
+describe.only('B.07 - Game (stage newRound)', function () {
+    it('03 - Should be able to compute the scores when some players found storyteller card', () => {
+        // FIXME
+        const newGame = gameplay(Stages.newRound);
+    });
+
+    it.todo('Check reset variables');
+    it.todo('Give cards');
 });
