@@ -125,7 +125,6 @@ class Game {
         this._players.forEach(player => {
             const cardsDrawn = new Set(this._library.splice(0, numOfCards));
             player.hand = cardsDrawn;
-            return player;
         });
     }
 
@@ -142,22 +141,29 @@ class Game {
     }
 
     private checkWinner() {
-        const reachedMaxScore = this.players.filter(player => player.score >= this._maxScore);
+        let playersToCheck;
 
-        if (reachedMaxScore.length === 0) {
+        // There is no more cards in library
+        if (this._library.length === 0) {
+            playersToCheck = [...this._players];
+        } else {
+            playersToCheck = this.players.filter(player => player.score >= this._maxScore);
+        }
+
+        if (playersToCheck.length === 0) {
             return;
         }
 
-        if (reachedMaxScore.length === 1) {
-            this._winner = reachedMaxScore[0];
+        if (playersToCheck.length === 1) {
+            this._winner = playersToCheck[0];
             return;
         }
 
-        reachedMaxScore.sort((a: Player, b: Player) => b.score - a.score);
+        playersToCheck.sort((a: Player, b: Player) => b.score - a.score);
 
         // No tie
-        if (reachedMaxScore[0].score > reachedMaxScore[1].score) {
-            this._winner = reachedMaxScore[0];
+        if (playersToCheck[0].score > playersToCheck[1].score) {
+            this._winner = playersToCheck[0];
             return;
         }
     }
@@ -301,8 +307,6 @@ class Game {
             this._stage = Stages.end;
         } else {
             this._stage = Stages.newRound;
-            // TODO give cards
-            // TODO reset variables
         }
     }
 
@@ -310,6 +314,14 @@ class Game {
         this.cleanRoundCardsAndVotes();
         this.reorderPlayers();
         this.giveCards(1);
+        this.checkWinner();
+
+        if (this._winner) {
+            this._stage = Stages.end;
+        } else {
+            this._stage = Stages.storyteller;
+            this.setStoryteller(this._players[0].id);
+        }
     }
 }
 
