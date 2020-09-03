@@ -372,11 +372,12 @@ describe('B.07 - Game (stage scoring)', function () {
 });
 
 describe('B.07 - Game (stage newRound)', function () {
-    it('03 - Should be able to compute the scores when some players found storyteller card', () => {
-        // FIXME
-        // const newGame = gameplay(Stages.newRound);
-    });
+    // it.only('03 - Should be able to compute the scores when some players found storyteller card', () => {
+    //     const newGame = gameplay(Stages.newRound);
+    // });
 
     it.todo('Check reset variables');
+    it.todo('Winner when reach the max score');
+    it.todo('Winner when there are no more cards in library');
     it.todo('Give cards');
 });

@@ -4,7 +4,13 @@ import { Stages } from "../src/models/enums/Stages";
 import { generatePlayer, generateCardList } from "./randomGenerator";
 
 function newRound(stage: number, newGame: Game) {
-    newGame.players.forEach(player => console.log(player.score));
+    newGame.newRound();
+    // const outputData = {
+    //     library: newGame.library.length,
+    //     stage: newGame.stage,
+    //     scores: newGame.players.map(player => player.score).join()
+    // }
+    // console.log(outputData);
     if (newGame.stage >= Stages.end) {
         return;
     }
@@ -21,7 +27,7 @@ function newRound(stage: number, newGame: Game) {
     if (stage >= Stages.roundVote) {
         newGame.playersNotStoryteller.forEach(player => {
             const roundCards = newGame.roundCards.filter(cards => cards !== player.roundCard);
-            const voteCard = roundCards[0];
+            const voteCard = roundCards[Math.floor(Math.random() * roundCards.length)];
             newGame.vote(player.id, voteCard);
         });
     }
@@ -56,7 +62,7 @@ export default function gameplay(stage?: number, numPlayers?: number, numCards?:
     if (stage >= Stages.roundVote) {
         newGame.playersNotStoryteller.forEach(player => {
             const roundCards = newGame.roundCards.filter(cards => cards !== player.roundCard);
-            const voteCard = roundCards[0];
+            const voteCard = roundCards[Math.floor(Math.random() * roundCards.length)];
             newGame.vote(player.id, voteCard);
         });
     }
