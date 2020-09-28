@@ -124,7 +124,7 @@ class Game {
     private giveCards(numOfCards: number) {
         this._players.forEach(player => {
             const cardsDrawn = new Set(this._library.splice(0, numOfCards));
-            player.hand = cardsDrawn;
+            player.hand = new Set([...Array.from(player.hand), ...Array.from(cardsDrawn)]);
         });
     }
 
@@ -212,7 +212,9 @@ class Game {
         if (!this.storyteller.hand.has(cardId)) {
             throw Error('Ooopps... Storyteller does not have chosen card');
         }
+
         this._sentence = sentence
+        this.storyteller.hand.delete(cardId);
         this._storytellerCard = cardId;
         this._roundCards.push(cardId);
         this._stage = Stages.roundCards;

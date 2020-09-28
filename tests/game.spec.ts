@@ -119,6 +119,7 @@ describe('B.04 - Game (stage sentence)', function () {
         newGame.setStoryteller(storyteller.id);
         newGame.setSentenceAndCard(sentence, storytellerCard);
 
+        expect(storyteller.hand.size).toBe(5);
         expect(newGame.sentence).toContain(sentence);
         expect(newGame.storytellerCard).toContain(storytellerCard);
         expect(newGame.roundCards).toContain(storytellerCard);
