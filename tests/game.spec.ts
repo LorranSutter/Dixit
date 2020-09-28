@@ -1,4 +1,5 @@
 import Game from '../src/models/Game';
+import Player from '../src/models/Player';
 import { Stages } from '../src/models/enums/Stages';
 import { generatePlayer, generateCardList } from './randomGenerator';
 import gameplay from './gameplay';
@@ -373,12 +374,58 @@ describe('B.07 - Game (stage scoring)', function () {
 });
 
 describe('B.07 - Game (stage newRound)', function () {
-    // it.only('03 - Should be able to compute the scores when some players found storyteller card', () => {
-    //     const newGame = gameplay(Stages.newRound);
-    // });
 
-    it.todo('Check reset variables');
-    it.todo('Winner when reach the max score');
-    it.todo('Winner when there are no more cards in library');
-    it.todo('Give cards');
+    // FIXME sometimes it throws 'Ooopps... Storyteller does not have chosen card'
+    it('01 - Should be able to set a new round', () => {
+        const newGame = gameplay(Stages.newRound);
+
+        expect(newGame.stage).toBe(Stages.sentence);
+    });
+
+    // TODO Check players reordering
+    it('02 - Should be able to reset variables', () => {
+        const newGame = gameplay(Stages.newRound);
+
+        newGame.players.forEach(player => {
+            expect(player.hand.size).toBe(6);
+            expect(player.roundCard).toBe(undefined);
+            expect(player.vote).toBe(undefined);
+        });
+    });
+
+    it('03 - Should be able to have a winner', () => {
+        const newGame = gameplay(Stages.end);
+
+        expect(newGame.stage).toBe(Stages.end);
+        expect(newGame.winner).toBeInstanceOf(Player);
+    });
+
+    it('04 - Should be able to have a winner when reach the max score', () => {
+        const maxScore = 10;
+        const newGame = gameplay(Stages.end, 4, 84, maxScore);
+        const winner = newGame.winner;
+
+        expect(newGame.stage).toBe(Stages.end);
+        expect(winner).toBeInstanceOf(Player);
+        expect((winner as Player).score).toBeGreaterThanOrEqual(maxScore);
+        newGame.players.forEach(player => {
+            if (player.id !== (winner as Player).id) {
+                expect((winner as Player).score).toBeGreaterThanOrEqual(player.score);
+            }
+        })
+    });
+
+    it('05 - Should be able to have a winner when there are not more cards in the library', () => {
+        const newGame = gameplay(Stages.end, 4, 84, 100);
+        const winner = newGame.winner;
+
+        expect(newGame.stage).toBe(Stages.end);
+        expect(newGame.library.length).toBe(0);
+        expect(winner).toBeInstanceOf(Player);
+        newGame.players.forEach(player => {
+            if (player.id !== (winner as Player).id) {
+                expect((winner as Player).score).toBeGreaterThanOrEqual(player.score);
+            }
+        })
+    });
 });

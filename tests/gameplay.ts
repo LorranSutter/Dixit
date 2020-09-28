@@ -3,14 +3,21 @@ import { Stages } from "../src/models/enums/Stages";
 
 import { generatePlayer, generateCardList } from "./randomGenerator";
 
+// TODO create logic to execute only one new round
+// TODO create logic to go until have a winner (current situation)
 function newRound(stage: number, newGame: Game) {
+    // newGame.players.forEach(player => console.log(player));
     newGame.newRound();
+    // newGame.players.forEach(player => console.log(player));
     // const outputData = {
     //     library: newGame.library.length,
     //     stage: newGame.stage,
     //     scores: newGame.players.map(player => player.score).join()
     // }
     // console.log(outputData);
+    if (stage === Stages.newRound) {
+        return;
+    }
     if (newGame.stage >= Stages.end) {
         return;
     }
@@ -33,7 +40,9 @@ function newRound(stage: number, newGame: Game) {
     }
     if (stage >= Stages.scoring) {
         newGame.computeScores();
-        newRound(Stages.scoring, newGame);
+    }
+    if (stage >= Stages.end) {
+        newRound(stage, newGame);
     }
 }
 
@@ -70,9 +79,7 @@ export default function gameplay(stage?: number, numPlayers?: number, numCards?:
         newGame.computeScores();
     }
     if (stage >= Stages.newRound) {
-        console.log('Here');
-        newRound(Stages.scoring, newGame);
-        console.log('Here1');
+        newRound(stage, newGame);
     }
 
     return newGame;
